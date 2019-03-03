@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WEB-Welcom</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="colors.js"></script>
+    <!-- 호환성 위해 fetch polyfill -->
+    <script src="fetch/fetch.js"></script>
+    <script>
+
+        window.fbAsyncInit = function() {
+            FB.init({
+            appId      : '270502790546220',
+            cookie     : true,  // enable cookies to allow the server to access 
+                                // the session
+            xfbml      : true,  // parse social plugins on this page
+            version    : 'v3.1' // The Graph API version to use for the call
+            });
+
+            // Now that we've initialized the JavaScript SDK, we call 
+            // FB.getLoginStatus().  This function gets the state of the
+            // person visiting this page and can return one of three states to
+            // the callback you provide.  They can be:
+            //
+            // 1. Logged into your app ('connected')
+            // 2. Logged into Facebook, but not your app ('not_authorized')
+            // 3. Not logged into Facebook and can't tell if they are logged into
+            //    your app or not.
+            //
+            // These three cases are handled in the callback function.
+
+            FB.getLoginStatus(function(response) {
+                console.log(response);
+                // statusChangeCallback(response);
+            });
+
+        };
+
+            (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+    </script>
+</head>
+<body>
+    <h1><a href="#!web" onclick="fetchPage('web')">WEB</a></h1>
+
+    <input id="night_day" type="button" value="night" onclick="
+        nightDayHandler(this);
+    ">
+    <ol id="nav">
+            
+    </ol>
+    <article>
+        
+    </article>
+    <script>
+        function fetchPage(name){
+            fetch(name).then(function(response){  
+                response.text().then(function(text) {
+                    document.querySelector('article').innerHTML = text;
+                });
+            });
+        }
+        if(location.hash) {
+            fetchPage(location.hash.substr(2));
+        } else {
+            fetchPage('web');
+        }
+        fetch('list').then(function(response){  
+           response.text().then(function(text) {
+                // <li><a href="#!html" onclick="fetchPage('html')">HTML</a></li>
+                console.log(text);
+                var items = text.split(',');
+                var i=0;
+                var tags='';
+                while(i < items.length) {
+                    var item = items[i];
+                    item = item.trim();
+                    console.log(item);
+                    var tag = '<li><a href="#!'+item+'" onclick="fetchPage(\''+item+'\')">'+item+'</li>';
+                    
+                    console.log(tag);
+                    tags = tags + tag;
+                    i = i + 1;
+                }
+                console.log(items);
+                document.querySelector('#nav').innerHTML = tags;
+            });
+        });
+    </script>
+</body>
+</html>
